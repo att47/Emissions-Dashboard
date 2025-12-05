@@ -9,19 +9,37 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
+        @font-face {
+            font-family: 'GT Super Display';
+            src: url('https://db.onlinewebfonts.com/t/d7e8a95865396cddca89b00080d2cba6.woff') format('woff');
+            font-weight: 300;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'GT America';
+            src: url('https://db.onlinewebfonts.com/t/8bfe982536a57e37f355f94866f969b3.woff') format('woff');
+            font-weight: 700;
+            font-style: normal;
+        }
+        
         * {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         .font-display {
-            font-family: 'Inter', sans-serif;
+            font-family: 'GT Super Display', serif;
             font-weight: 300;
-            letter-spacing: -0.02em;
+        }
+        
+        .font-heading {
+            font-family: 'GT America', sans-serif;
+            font-weight: 700;
         }
         
         .font-body {
             font-family: 'Inter', sans-serif;
-        }
+        }}
         
         @keyframes fadeIn {
             from { 
