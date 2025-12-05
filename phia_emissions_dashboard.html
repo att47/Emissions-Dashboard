@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phia Sustainability Impact Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @font-face {
+          font-family: 'Neue Montreal';
+          src: url('https://fonts.cdnfonts.com/s/68387/NeueMontreal-Regular.woff') format('woff');
+          font-weight: 400;
+          font-style: normal;
+        }
+        
+        @font-face {
+          font-family: 'Neue Montreal';
+          src: url('https://fonts.cdnfonts.com/s/68387/NeueMontreal-Medium.woff') format('woff');
+          font-weight: 500;
+          font-style: normal;
+        }
+        
+        @font-face {
+          font-family: 'GT Super Display';
+          src: url('https://db.onlinewebfonts.com/t/d7e8a95865396cddca89b00080d2cba6.woff') format('woff');
+          font-weight: 300;
+          font-style: normal;
+        }
+        
+        @font-face {
+          font-family: 'GT Super Display';
+          src: url('https://db.onlinewebfonts.com/t/f7e16c87f1d8976c7030b60cdb55473e.woff') format('woff');
+          font-weight: 300;
+          font-style: italic;
+        }
+        
+        * {
+          font-family: 'Neue Montreal', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        @keyframes fadeIn {
+          from { 
+            opacity: 0;
+            transform: translateY(8px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fade {
+          animation: fadeIn 0.4s ease-out backwards;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState } = React;
+        const { BarChart, Bar, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Treemap } = Recharts;
+        
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Dashboard data
+        const dashboardData = {
+          september: {
+            totalEmissionsAvoided: 3557.53,
+            totalWaterAvoided: 898097,
+            totalItems: 5387,
+            totalTransactions: 4807,
+            avgPerItem: 0.66,
+            avgWaterPerItem: 166.72,
+            milesAvoided: 8806,
+            treesEquivalent: 169,
+            electricityHours: 3867,
+            showerMinutes: 74841,
+            personDays: 449049,
+            jeansEquivalent: 119.7,
+            
+            categoryBreakdown: [
+              { category: 'Mid Market', emissions: 2474.70, water: 431852, color: '#2563eb' },
+              { category: 'Unknown', emissions: 973.23, water: 455005, color: '#3b82f6' },
+              { category: 'Luxury', emissions: 109.60, water: 11240, color: '#60a5fa' }
+            ],
+            
+            weeklyTrend: [
+              { week: 'Week 1', emissions: 856, water: 166118 },
+              { week: 'Week 2', emissions: 921, water: 235668 },
+              { week: 'Week 3', emissions: 845, water: 189159 },
+              { week: 'Week 4', emissions: 935, water: 228341 }
+            ]
+          }
+        };
+
+        function PhiaDashboard() {
+          const [selectedMetric, setSelectedMetric] = useState('carbon');
+          const data = dashboardData.september;
+
+          return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+              {/* Header */}
+              <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,white,transparent_50%)]"></div>
+                </div>
+                
+                <div className="container mx-auto px-6 py-5 relative z-10">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center shadow-lg">
+                        <span className="text-xl font-light italic text-white" style={{fontFamily: 'GT Super Display'}}>
+                          phia
+                        </span>
+                      </div>
+                      <div>
+                        <h1 className="text-2xl font-light tracking-tight mb-0.5" style={{fontFamily: 'GT Super Display'}}>
+                          Sustainability Impact Dashboard
+                        </h1>
+                        <p className="text-blue-100 text-xs font-light" style={{fontFamily: 'Neue Montreal'}}>
+                          Environmental Impact Through Secondhand Retail
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2 bg-white bg-opacity-15 backdrop-blur-md rounded-xl p-1">
+                      <button
+                        onClick={() => setSelectedMetric('carbon')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
+                          selectedMetric === 'carbon'
+                            ? 'bg-white text-blue-700 shadow-md'
+                            : 'text-white hover:bg-white hover:bg-opacity-10'
+                        }`}
+                        style={{fontFamily: 'Neue Montreal'}}
+                      >
+                        Carbon
+                      </button>
+                      <button
+                        onClick={() => setSelectedMetric('water')}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-300 ${
+                          selectedMetric === 'water'
+                            ? 'bg-white text-blue-700 shadow-md'
+                            : 'text-white hover:bg-white hover:bg-opacity-10'
+                        }`}
+                        style={{fontFamily: 'Neue Montreal'}}
+                      >
+                        Water
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="container mx-auto px-6 py-5">
+                {/* Key Metrics */}
+                <div className="grid grid-cols-4 gap-3 mb-5">
+                  <div className="bg-gradient-to-br from-blue-600 to-blue-500 text-white rounded-2xl p-4 border border-blue-400 shadow-lg">
+                    <p className="text-xs font-medium text-blue-100 tracking-wide uppercase mb-1" style={{fontFamily: 'Neue Montreal'}}>
+                      {selectedMetric === 'carbon' ? 'Total CO₂e Avoided' : 'Total Water Saved'}
+                    </p>
+                    <p className="text-2xl font-light" style={{fontFamily: 'GT Super Display'}}>
+                      {selectedMetric === 'carbon' 
+                        ? data.totalEmissionsAvoided.toLocaleString() 
+                        : data.totalWaterAvoided.toLocaleString()}
+                    </p>
+                    <p className="text-xs font-light text-blue-100 mt-0.5" style={{fontFamily: 'Neue Montreal'}}>
+                      {selectedMetric === 'carbon' ? 'kg CO₂e' : 'liters'}
+                    </p>
+                  </div>
+                  
+                  <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-md">
+                    <p className="text-xs font-medium text-gray-500 tracking-wide uppercase mb-1" style={{fontFamily: 'Neue Montreal'}}>
+                      Items Sold
+                    </p>
+                    <p className="text-2xl font-light text-gray-900" style={{fontFamily: 'GT Super Display'}}>
+                      {data.totalItems.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5" style={{fontFamily: 'Neue Montreal'}}>
+                      {data.totalTransactions.toLocaleString()} transactions
+                    </p>
+                  </div>
+                  
+                  <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-md">
+                    <p className="text-xs font-medium text-gray-500 tracking-wide uppercase mb-1" style={{fontFamily: 'Neue Montreal'}}>
+                      Avg/Item
+                    </p>
+                    <p className="text-2xl font-light text-gray-900" style={{fontFamily: 'GT Super Display'}}>
+                      {selectedMetric === 'carbon' ? data.avgPerItem : data.avgWaterPerItem.toFixed(0)}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5" style={{fontFamily: 'Neue Montreal'}}>
+                      {selectedMetric === 'carbon' ? 'kg CO₂e' : 'liters'}
+                    </p>
+                  </div>
+                  
+                  <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-md">
+                    <p className="text-xs font-medium text-gray-500 tracking-wide uppercase mb-1" style={{fontFamily: 'Neue Montreal'}}>
+                      Reduction
+                    </p>
+                    <p className="text-2xl font-light text-gray-900" style={{fontFamily: 'GT Super Display'}}>
+                      {selectedMetric === 'carbon' ? '6.4' : '7.4'}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5" style={{fontFamily: 'Neue Montreal'}}>
+                      % vs buying new
+                    </p>
+                  </div>
+                </div>
+
+                {/* Real-World Impact */}
+                {selectedMetric === 'carbon' ? (
+                  <div className="grid grid-cols-3 gap-3 mb-5">
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 shadow-md">
+                      <div className="p-2.5 rounded-lg bg-red-50">
+                        <i data-lucide="car" className="w-5 h-5 text-red-600"></i>
+                      </div>
+                      <div>
+                        <p className="text-xl font-light text-gray-900" style={{fontFamily: 'GT Super Display'}}>
+                          {data.milesAvoided.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-500" style={{fontFamily: 'Neue Montreal'}}>Miles not driven</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 shadow-md">
+                      <div className="p-2.5 rounded-lg bg-green-50">
+                        <i data-lucide="tree-deciduous" className="w-5 h-5 text-green-600"></i>
+                      </div>
+                      <div>
+                        <p className="text-xl font-light text-gray-900" style={{fontFamily: 'GT Super Display'}}>
+                          {data.treesEquivalent.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-500" style={{fontFamily: 'Neue Montreal'}}>Trees' annual absorption</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 shadow-md">
+                      <div className="p-2.5 rounded-lg bg-amber-50">
+                        <i data-lucide="zap" className="w-5 h-5 text-amber-600"></i>
+                      </div>
+                      <div>
+                        <p className="text-xl font-light text-gray-900" style={{fontFamily: 'GT Super Display'}}>
+                          {data.electricityHours.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-500" style={{fontFamily: 'Neue Montreal'}}>Hours of electricity</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-3 gap-3 mb-5">
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 shadow-md">
+                      <div className="p-2.5 rounded-lg bg-blue-50">
+                        <i data-lucide="shower-head" className="w-5 h-5 text-blue-600"></i>
+                      </div>
+                      <div>
+                        <p className="text-xl font-light text-gray-900" style={{fontFamily: 'GT Super Display'}}>
+                          {data.showerMinutes.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-500" style={{fontFamily: 'Neue Montreal'}}>Minutes of showers</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 shadow-md">
+                      <div className="p-2.5 rounded-lg bg-cyan-50">
+                        <i data-lucide="users" className="w-5 h-5 text-cyan-600"></i>
+                      </div>
+                      <div>
+                        <p className="text-xl font-light text-gray-900" style={{fontFamily: 'GT Super Display'}}>
+                          {data.personDays.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-500" style={{fontFamily: 'Neue Montreal'}}>Person-days drinking water</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 shadow-md">
+                      <div className="p-2.5 rounded-lg bg-indigo-50">
+                        <i data-lucide="package" className="w-5 h-5 text-indigo-600"></i>
+                      </div>
+                      <div>
+                        <p className="text-xl font-light text-gray-900" style={{fontFamily: 'GT Super Display'}}>
+                          {data.jeansEquivalent.toFixed(1)}
+                        </p>
+                        <p className="text-xs text-gray-500" style={{fontFamily: 'Neue Montreal'}}>Pairs of jeans</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Charts */}
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  {/* Weekly Trend */}
+                  <div className="bg-white border border-gray-100 rounded-2xl shadow-md p-5">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-4" style={{fontFamily: 'GT Super Display'}}>
+                      {selectedMetric === 'carbon' ? 'Emissions Avoided' : 'Water Saved'} Over Time
+                    </h3>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <LineChart data={data.weeklyTrend}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                        <XAxis dataKey="week" tick={{ fill: '#6b7280', fontSize: 12 }} />
+                        <YAxis tick={{ fill: '#6b7280', fontSize: 12 }} />
+                        <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                        <Line 
+                          type="monotone" 
+                          dataKey={selectedMetric === 'carbon' ? 'emissions' : 'water'} 
+                          stroke="#10b981" 
+                          strokeWidth={3}
+                          dot={{ fill: '#10b981', r: 5 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* Category Breakdown */}
+                  <div className="bg-white border border-gray-100 rounded-2xl shadow-md p-5">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-4" style={{fontFamily: 'GT Super Display'}}>
+                      Impact by Category
+                    </h3>
+                    <ResponsiveContainer width="100%" height={280}>
+                      <BarChart data={data.categoryBreakdown}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                        <XAxis dataKey="category" tick={{ fill: '#6b7280', fontSize: 11 }} />
+                        <YAxis tick={{ fill: '#6b7280', fontSize: 11 }} />
+                        <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                        <Bar dataKey={selectedMetric === 'carbon' ? 'emissions' : 'water'} radius={[8, 8, 0, 0]}>
+                          {data.categoryBreakdown.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="pt-3 mt-4 border-t border-gray-200 text-center text-gray-500 text-xs" style={{fontFamily: 'Neue Montreal'}}>
+                  <p className="font-light">
+                    September 2025 • {data.totalTransactions.toLocaleString()} Transactions • Powered by <span className="font-medium text-blue-600" style={{fontFamily: 'GT Super Display', fontStyle: 'italic'}}>phia</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<PhiaDashboard />);
+        
+        // Initialize icons after render
+        setTimeout(() => lucide.createIcons(), 100);
+    </script>
+</body>
+</html>
